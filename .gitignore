@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*service-account*.json
+*credentials*.json
+gcp-key*.json
+
+# Local Databases & Generated Runtime Data
+data/raw/*.csv
+data/raw/*.json
+data/raw/*.parquet
+data/sample/*.csv
+data/sample/*.json
+data/bigquery_sandbox/*.csv
+data/processed/*.duckdb
+data/processed/*.duckdb.wal
+data/processed/*.db
+data/processed/*.sqlite
+data/processed/*.csv
+data/processed/*.json
+!data/sample/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+
+# Power BI temp / local files
+powerbi/datasets/*.csv
+!powerbi/datasets/.gitkeep
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

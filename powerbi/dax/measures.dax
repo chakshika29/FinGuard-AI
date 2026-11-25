@@ -1,0 +1,80 @@
+// ============================================================================
+// FinGuard AI - Power BI DAX Measures
+// All financial data is 100% synthetic.
+// ============================================================================
+
+Total Transactions =
+COUNTROWS('fact_transactions')
+
+Total Transaction Value =
+SUM('fact_transactions'[transaction_amount])
+
+Average Transaction Amount =
+DIVIDE([Total Transaction Value], [Total Transactions], 0)
+
+High Risk Transaction Count =
+CALCULATE(
+    COUNTROWS('fact_transactions'),
+    'fact_transactions'[fraud_risk_score] >= 50
+)
+
+Critical Risk Transaction Count =
+CALCULATE(
+    COUNTROWS('fact_transactions'),
+    'fact_transactions'[fraud_risk_score] >= 75
+)
+
+Suspicious Transaction Rate =
+DIVIDE([High Risk Transaction Count], [Total Transactions], 0)
+
+Flagged Exposure Value =
+CALCULATE(
+    SUM('fact_transactions'[transaction_amount]),
+    'fact_transactions'[fraud_risk_score] >= 50
+)
+
+Quarantined Record Count =
+COUNTROWS('fact_quarantined_records')
+
+Open Quarantine Count =
+CALCULATE(
+    COUNTROWS('fact_quarantined_records'),
+    'fact_quarantined_records'[remediation_status] = "OPEN"
+)
+
+Validation Failure Rate =
+DIVIDE(
+    [Quarantined Record Count],
+    [Total Transactions] + [Quarantined Record Count],
+    0
+)
+
+Data Quality Score =
+(1 - [Validation Failure Rate]) * 100
+
+Duplicate Transaction Rate =
+VAR DupCount =
+    CALCULATE(
+        COUNTROWS('fact_quarantined_records'),
+        CONTAINSSTRING('fact_quarantined_records'[failed_rules], "DQ-003")
+    )
+RETURN
+    DIVIDE(DupCount, [Total Transactions] + [Quarantined Record Count], 0)
+
+Total Credit Exposure =
+SUM('dim_accounts_credit_risk'[outstanding_balance])
+
+Total Credit Limit =
+SUM('dim_accounts_credit_risk'[credit_limit])
+
+Average Credit Utilization =
+AVERAGE('dim_accounts_credit_risk'[credit_utilization_ratio])
+
+Overdue Account Count =
+CALCULATE(
+    COUNTROWS('dim_accounts_credit_risk'),
+    'dim_accounts_credit_risk'[repayment_status] <> "CURRENT"
+)
+
+Overdue Account Rate =
+DIVIDE([Overdue Account Count], COUNTROWS('dim_accounts_credit_risk'), 0)
